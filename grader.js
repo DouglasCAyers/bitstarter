@@ -57,9 +57,14 @@ var checkHtmlFile = function(htmlfile, checksfile) {
 };
 
 var checkUrlAsync = function(url, checksfile) {
+
     console.log("getting url: " + url);
+
     rest.get(url).on('complete', function( request, response ) {
+
         console.log("request complete, checking html");
+        console.log(response);
+
         $ = cheerio.load(response);
         var checks = loadChecks(checksfile).sort();
         var out = {};
@@ -67,9 +72,11 @@ var checkUrlAsync = function(url, checksfile) {
             var present = $(checks[ii]).length > 0;
             out[checks[ii]] = present;
         }
+
         var outJson = JSON.stringify(out, null, 4);
         console.log(outJson);
     });
+
     console.log("returning checks on url html");
 }
 

@@ -56,22 +56,21 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     return out;
 };
 
-var checkURL = function(url, checksfile) {
-    var out = {};
+var checkUrlAsync = function(url, checksfile) {
     console.log("getting url: " + url);
     rest.get(url).on('complete', function( request, response ) {
         console.log("request complete, checking html");
         $ = cheerio.load(response);
         var checks = loadChecks(checksfile).sort();
-//        var out = {};
+        var out = {};
         for(var ii in checks) {
             var present = $(checks[ii]).length > 0;
             out[checks[ii]] = present;
         }
-//        return out;
+        var outJson = JSON.stringify(out, null, 4);
+        console.log(outJson);
     });
     console.log("returning checks on url html");
-    return out;
 }
 
 var clone = function(fn) {
@@ -87,20 +86,17 @@ if(require.main == module) {
         .option('-u, --url <html_file>', 'URL to html page. Specify either file or url, but not both')
         .parse(process.argv);
 
-    var checkJson;
-    var outJson;
-
     if (program.url) {
         console.log("Checking url...");
-        checkJson = checkURL(program.url, program.checks);
+        checkUrlAsync(program.url, program.checks);
     } else {
         console.log("Checking file...");
-        checkJson = checkHtmlFile(program.file, program.checks);
+        var checkJson = checkHtmlFile(program.file, program.checks);
+        var outJson = JSON.stringify(checkJson, null, 4);
+        console.log(outJson);
     }
 
-    outJson = JSON.stringify(checkJson, null, 4);
 
-    console.log(outJson);
 
 } else {
     exports.checkHtmlFile = checkHtmlFile;

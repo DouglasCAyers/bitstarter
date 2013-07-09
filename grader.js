@@ -47,26 +47,30 @@ var loadChecks = function(checksfile) {
 
 var checkHtmlFile = function(htmlfile, checksfile) {
     $ = cheerioHtmlFile(htmlfile);
-    return checkHtmlHelper($, checksfile);
-};
-
-var checkURL = function(url, checksfile) {
-    var out = {};
-    rest.get(url).on('complete', function( request, response ) {
-        $ = cheerio.load(response);
-        out = checkHtmlHelper($, checksfile);
-    });
-    return out;
-}
-
-var checkHtmlHelper = function(cheerioDom, checksfile) {
-    $ = cheerioDom;
     var checks = loadChecks(checksfile).sort();
     var out = {};
     for(var ii in checks) {
         var present = $(checks[ii]).length > 0;
         out[checks[ii]] = present;
     }
+    return out;
+};
+
+var checkURL = function(url, checksfile) {
+    var out = {};
+    console.log("getting url: " + url);
+    rest.get(url).on('complete', function( request, response ) {
+        console.log("request complete, checking html");
+        $ = cheerio.load(response);
+        var checks = loadChecks(checksfile).sort();
+//        var out = {};
+        for(var ii in checks) {
+            var present = $(checks[ii]).length > 0;
+            out[checks[ii]] = present;
+        }
+//        return out;
+    });
+    console.log("returning checks on url html");
     return out;
 }
 
@@ -86,11 +90,11 @@ if(require.main == module) {
     var checkJson;
     var outJson;
 
-    console.log(program.url);
-
     if (program.url) {
+        console.log("Checking url...");
         checkJson = checkURL(program.url, program.checks);
     } else {
+        console.log("Checking file...");
         checkJson = checkHtmlFile(program.file, program.checks);
     }
 

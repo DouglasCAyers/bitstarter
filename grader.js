@@ -37,10 +37,6 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
-var optionAsString = function(optionValue) {
-    return optionValue.toString();
-}
-
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
 };
@@ -84,7 +80,7 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url', 'URL to html page. Specify either -f or -u, but not both', clone(optionAsString), '')
+        .option('-u, --url <html_file>', 'URL to html page. Specify either file or url, but not both')
         .parse(process.argv);
 
     var checkJson;

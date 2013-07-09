@@ -60,12 +60,11 @@ var checkUrlAsync = function(url, checksfile) {
 
     console.log("getting url: " + url);
 
-    rest.get(url).on('complete', function( request, response ) {
+    rest.get(url).on('complete', function( result, response ) {
 
         console.log("request complete, checking html");
-        console.log(response);
 
-        $ = cheerio.load(response);
+        $ = cheerio.load(result);
         var checks = loadChecks(checksfile).sort();
         var out = {};
         for(var ii in checks) {

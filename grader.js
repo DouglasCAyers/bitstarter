@@ -84,14 +84,15 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url', 'URL to html page. Specify either -f or -u, but not both', clone(optionAsString))
+        .option('-u, --url', 'URL to html page. Specify either -f or -u, but not both', clone(optionAsString), '')
         .parse(process.argv);
 
     var checkJson;
     var outJson;
 
+    console.log(program.url);
+
     if (program.url) {
-        console.log(program.url);
         checkJson = checkURL(program.url, program.checks);
     } else {
         checkJson = checkHtmlFile(program.file, program.checks);
